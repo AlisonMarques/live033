@@ -1,23 +1,19 @@
 'use client'
 
 import { ContactForm } from '@/components/ContactForm';
+import { Contact } from '@prisma/client';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
-export default function CreateContactPage() {
-  const router = useRouter()
-
+export function EditContactForm({ contact }: { contact: Contact }) {
   async function handleSubmit(data: { name: string; email: string }) {
-    await fetch('/api/contacts', {
-      method: 'POST',
+    await fetch(`/api/contacts/${contact.id}`, {
+      method: 'PUT',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
-    router.push('/');
   }
 
   return (
@@ -31,11 +27,12 @@ export default function CreateContactPage() {
           <span>Voltar para a lista</span>
         </Link>
         <h1 className="font-semibold text-3xl tracking-tighter">
-          Criar contato
+          Editar contato
         </h1>
       </header>
 
       <ContactForm
+        contact={contact}
         onSubmit={handleSubmit}
       />
     </>

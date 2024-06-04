@@ -1,29 +1,23 @@
-import { ContactForm } from '@/components/ContactForm';
-import { ArrowLeftIcon } from 'lucide-react';
-import Link from 'next/link';
+import { db } from '@/lib/db';
+import { redirect } from 'next/navigation';
+import { EditContactForm } from './EditContactForm';
 
-const contact = {
-  email: 'edit@jstack.com.br',
-  name: 'Editing Contact...',
-};
+interface ICreateContactPageProps {
+  params: {
+    contactId: string;
+  };
+}
 
-export default function CreateContactPage() {
-  return (
-    <>
-      <header>
-        <Link
-          href="/"
-          className="text-muted-foreground flex items-center gap-1 text-xs mb-2 dark:hover:text-sky-300 hover:text-sky-600"
-        >
-          <ArrowLeftIcon className="size-4" />
-          <span>Voltar para a lista</span>
-        </Link>
-        <h1 className="font-semibold text-3xl tracking-tighter">
-          Editar contato
-        </h1>
-      </header>
+export default async function CreateContactPage({ params }: ICreateContactPageProps) {
+  const { contactId } = params;
 
-      <ContactForm contact={contact} />
-    </>
-  );
+  const contact = await db.contact.findUnique({
+    where: { id: contactId },
+  });
+
+  if (!contact) {
+    return redirect('/');
+  }
+
+  return <EditContactForm contact={contact} />;
 }
