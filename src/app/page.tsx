@@ -1,39 +1,14 @@
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Edit2Icon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
+import { db } from '@/lib/db';
+import { Edit2Icon, PlusCircleIcon } from 'lucide-react';
 import Link from 'next/link';
+import { DeleteContactDialog } from './_components/DeleteContactDialog';
 
-const contacts = [
-  {
-    id: String(Math.random()),
-    name: 'Contact',
-    email: 'contact@jstack.com.br',
-  },
-  {
-    id: String(Math.random()),
-    name: 'Contact',
-    email: 'contact@jstack.com.br',
-  },
-  {
-    id: String(Math.random()),
-    name: 'Contact',
-    email: 'contact@jstack.com.br',
-  },
-];
+export default async function Home() {
 
-export default function Home() {
+  const contacts = await db.contact.findMany();
   return (
     <>
       <header className="flex items-center justify-between">
@@ -90,25 +65,9 @@ export default function Home() {
                 </Link>
               </Button>
 
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button size="sm" className="h-8" variant="destructive">
-                    <Trash2Icon className="size-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      O contato será deletado permanentemente e não poderá ser recuperado.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction>Deletar</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <DeleteContactDialog
+                contactId={contact.id}
+              />
             </div>
           </div>
         ))}
